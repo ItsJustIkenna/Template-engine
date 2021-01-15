@@ -9,10 +9,147 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-
+const { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } = require("constants");
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+const employees = [];
+const managerQuestions = [
+  {
+    type: "input",
+    message: "what is your manager's name?",
+    name: "name",
+  },
+  {
+    type: "input",
+    message: "what is your manager's id?",
+    name: "id",
+  },
+  {
+    type: "input",
+    message: "what is your manager's email?",
+    name: "email",
+  },
+  {
+    type: "input",
+    message: "what is your manager's office number?",
+    name: "officeNumber",
+  },
+];
+
+const engineerQuestions = [
+  {
+    type: "input",
+    message: "what is your engineer's name?",
+    name: "name",
+  },
+  {
+    type: "input",
+    message: "what is your engineer's id?",
+    name: "id",
+  },
+  {
+    type: "input",
+    message: "what is your engineer's email?",
+    name: "email",
+  },
+  {
+    type: "input",
+    message: "what is your engineer's github?",
+    name: "github",
+  },
+];
+
+const internQuestions = [
+  {
+    type: "input",
+    message: "what is your intern's name?",
+    name: "name",
+  },
+  {
+    type: "input",
+    message: "what is your intern's id?",
+    name: "id",
+  },
+  {
+    type: "input",
+    message: "what is your intern's email?",
+    name: "email",
+  },
+  {
+    type: "input",
+    message: "what is your intern's school?",
+    name: "school",
+  },
+];
+
+function addManager() {
+  inquirer.prompt(managerQuestions).then((response) => {
+    const manager = new Manager(
+      response.name,
+      response.id,
+      response.email,
+      response.officeNumber
+    );
+
+    employees.push(manager);
+    createTeam();
+  });
+}
+
+function addEngineer() {
+  inquirer.prompt(engineerQuestions).then((response) => {
+    const engineer = new Engineer(
+      response.name,
+      response.id,
+      response.email,
+      response.github
+    );
+
+    employees.push(engineer);
+  });
+}
+
+function addIntern() {
+  inquirer.prompt(internQuestions).then((response) => {
+    const intern = new Intern(
+      response.name,
+      response.id,
+      response.email,
+      response.school
+    );
+
+    employees.push(intern);
+  });
+}
+
+function createTeam() {
+  console.log("Would you like to add another team member?");
+  inquirer
+    .prompt({
+      type: "list",
+      message: "what is your manager's name?",
+      name: "name",
+      choices: ["Engineer", "Intern", "No"],
+    })
+    .then((response) => {
+      switch (response) {
+        case "Engineer":
+          addEngineer();
+          break;
+
+        case "Intern":
+          addIntern();
+          break;
+
+        default:
+          console.log("Here is your team");
+        //   createTeam();
+      }
+    });
+}
+addManager();
+// addTeamMember();
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
