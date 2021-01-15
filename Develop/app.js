@@ -107,6 +107,7 @@ function addEngineer() {
     );
 
     employees.push(engineer);
+    createTeam();
   });
 }
 
@@ -120,20 +121,21 @@ function addIntern() {
     );
 
     employees.push(intern);
+    createTeam();
   });
 }
 
 function createTeam() {
-  console.log("Would you like to add another team member?");
   inquirer
     .prompt({
       type: "list",
-      message: "what is your manager's name?",
-      name: "name",
-      choices: ["Engineer", "Intern", "No"],
+      message: "Who would you like to add to the team?",
+      name: "addEmployee",
+      choices: [{ name: "none" }, { name: "Intern" }, { name: "Engineer" }],
     })
     .then((response) => {
-      switch (response) {
+      console.log(response);
+      switch (response.addEmployee) {
         case "Engineer":
           addEngineer();
           break;
@@ -144,12 +146,12 @@ function createTeam() {
 
         default:
           console.log("Here is your team");
-        //   createTeam();
+          console.log(employees);
+          fs.writeFileSync(outputPath, render(employees), "utf8");
       }
     });
 }
 addManager();
-// addTeamMember();
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
